@@ -40,9 +40,13 @@ public class Dense : LayerWithParameters {
         let inputWShaped = `repeat`(_input.flat, N: _w.shape.1, axis: 1).reshape(_w.shape)
         let wGrad = inputWShaped * outputGrad
         let bGrad = outputGrad
-        gradients = [wGrad, bGrad]
-        print("wGrad: \(wGrad)")
-        print("bGrad: \(bGrad)")
+        if gradients.isEmpty {
+            gradients = [[], []]
+        }
+        gradients[0].append(wGrad)
+        gradients[1].append(bGrad)
+//        print("wGrad: \(wGrad)")
+//        print("bGrad: \(bGrad)")
         return sum(_w * outputGrad, axis: 1).reshape((1, _w.shape.0))
     }
     

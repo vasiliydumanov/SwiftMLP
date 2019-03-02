@@ -17,6 +17,8 @@ public final class Accuracy : Metric {
     }
     
     public override func evaluate(y: matrix, yPred: matrix) -> Double {
-        return mean(sum((yPred == max(yPred, axis: 1)) && y, axis: 1))
+        let yPredRounded = yPred == max(yPred, axis: 1).reshape((yPred.shape.0, 1))
+        let yPredIsEqualToY = yPredRounded && y
+        return mean(sum(yPredIsEqualToY, axis: 1))
     }
 }

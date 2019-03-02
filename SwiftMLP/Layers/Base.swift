@@ -22,10 +22,14 @@ public typealias SerializedLayerData = [String: matrix]
 
 public class LayerWithParameters : Layer {
     public var states: [[matrix]]?
-    public var gradients: [matrix] = []
+    public var gradients: [[matrix]] = []
     
     public func apply(gradients: [matrix]) {
         preconditionFailure("Subclass must override this method.")
+    }
+    
+    public func resetGradients() {
+        gradients = []
     }
     
     public func encode() -> SerializedLayerData {

@@ -36,64 +36,76 @@ public final class Model {
         }
         guard let loss = _loss else { return }
         
+        let shuffledIdx = randperm(x.rows)
+        let shuffledX = x[shuffledIdx, arange(x.columns)]
+        let shuffledY = y[shuffledIdx, arange(y.columns)]
+        
         let valSize = Int(round(x.rows * validationPct))
         var xVal: matrix? = nil
         var yVal: matrix? = nil
-        var xTrain: matrix
-        var yTrain: matrix
+        let xTrain: matrix
+        let yTrain: matrix
         if validationPct > 0 {
-            xVal = x[0..<valSize, 0..<x.columns]
-            xTrain = x[valSize..<x.rows, 0..<x.columns]
-            yVal = y[0..<valSize, 0..<y.columns]
-            yTrain = x[valSize..<y.rows, 0..<y.columns]
+            xVal = shuffledX[0..<valSize, 0..<x.columns]
+            xTrain = shuffledX[valSize..<x.rows, 0..<x.columns]
+            yVal = shuffledY[0..<valSize, 0..<y.columns]
+            yTrain = shuffledY[valSize..<y.rows, 0..<y.columns]
         } else {
             xTrain = x
             yTrain = y
         }
         
-        let shuffledIdx = randperm(xTrain.rows)
-        xTrain = xTrain[shuffledIdx, arange(xTrain.columns)]
-        yTrain = yTrain[shuffledIdx, arange(yTrain.columns)]
-
-        let batchIds = Array(0..<xTrain.rows).chunked(into: batchSize)
+        let batchIds = Array(0..<xTrain.rows).chunked(minSize: batchSize)
         
         for epoch in 0..<nEpochs {
             for (i, batch) in batchIds.enumerated() {
                 let xBatch = xTrain[vector(batch), arange(xTrain.columns)]
                 let yBatch = yTrain[vector(batch), arange(yTrain.columns)]
                 
-                let yBatchPred = _layers.reduce(xBatch, { input, layer in layer.forward(input) })
+                let isSoftmaxAndCrossentropy = _layers.last is Softmax && loss is SoftmaxCrossentropy
+                let backpropLrs = isSoftmaxAndCrossentropy ? Array(_layers.dropLast()) : _layers
                 
-                let backpropLrs: [Layer]
-                let initGrad: matrix
-                if
-                    _layers.last is Softmax,
-                    loss is SoftmaxCrossentropy
-                {
-                    backpropLrs = Array(_layers.dropLast())
-                    initGrad = yBatchPred - yBatch
-                } else {
-                    backpropLrs = _layers
-                    initGrad = loss.backprop(y: yBatch, yPred: yBatchPred)
+                let xBatchExploded = vexplode(xBatch).map { reshape($0, shape: (1, $0.n)) }
+                let yBatchExploded = vexplode(yBatch).map { reshape($0, shape: (1, $0.n)) }
+                
+                var ySinglePreds: [vector] = []
+                _layerWithParams.forEach { lr in lr.resetGradients() }
+                for (xSingle, ySingle) in zip(xBatchExploded, yBatchExploded) {
+                    let ySinglePred = _layers.reduce(xSingle, { input, layer in layer.forward(input) })
+                    ySinglePreds.append(ySinglePred.flat)
+                    let initGrad: matrix
+                    if isSoftmaxAndCrossentropy {
+                        initGrad = ySinglePred - ySingle
+                    } else {
+                        initGrad = loss.backprop(y: ySingle, yPred: ySinglePred)
+                    }
+                    _ = backpropLrs.reversed().reduce(initGrad, { grad, layer in layer.backprop(grad) })
+                }
+                _layerWithParams.forEach { lr in
+                    optimizer.optimizeGradients(for: lr)
                 }
                 
-                _ = backpropLrs.reversed().reduce(initGrad, { grad, layer in layer.backprop(grad) })
-                
                 if i == batchIds.count - 1 {
+                    let yBatchPred = vstack(ySinglePreds)
                     var logStr: String = "Epoch: \(epoch + 1)/\(nEpochs): "
+                    var trainStrs: [String] = []
                     let trainLossVal = mean(loss.evaluate(y: yBatch, yPred: yBatchPred))
-                    logStr += "train loss = \(trainLossVal)"
-                    logStr += metrics.map { m in
+                    trainStrs.append("train loss = \(trainLossVal)")
+                    trainStrs += metrics.map { m in
                         "train \(m.name) = \(m.evaluate(y: yBatch, yPred: yBatchPred))"
-                    }.joined(separator: ", ")
+                    }
+                    logStr += trainStrs.joined(separator: ", ")
                     if let xVal = xVal, let yVal = yVal {
                         let yValPred = _layers.reduce(xVal, { input, layer in layer.forward(input) })
+                        var valStrs: [String] = []
                         let valLossVal = mean(loss.evaluate(y: yVal, yPred: yValPred))
-                        logStr += "; val loss = \(valLossVal)"
-                        logStr += metrics.map { m in
-                            "val \(m.evaluate(y: yVal, yPred: yValPred))"
-                        }.joined(separator: ", ")
+                        valStrs.append("; val loss = \(valLossVal)")
+                        valStrs += metrics.map { m in
+                            "val \(m.name) = \(m.evaluate(y: yVal, yPred: yValPred))"
+                        }
+                        logStr += valStrs.joined(separator: ", ")
                     }
+                    print(logStr)
                 }
             }
         }
