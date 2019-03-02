@@ -10,13 +10,13 @@ import Foundation
 import swix_ios
 
 public class Optimizer {
-    public let learningRate: Double
+    public var learningRate: Double
     
     public init(learningRate: Double = 0.0001) {
         self.learningRate = learningRate
     }
     
-    public func optimizeGradients(for layer: LayerWithParameters) {
+    public func optimizeGradients(for layer: LayerWithParameters, epoch: Int) {
         preconditionFailure("Subclass must override this method.")
     }
 }

@@ -26,7 +26,6 @@ public class Dense : LayerWithParameters {
     
     public override func forward(_ input: matrix) -> matrix {
         _input = input
-        gradients = []
         if _w == nil || _b == nil {
             let inputSize = input.shape.1
             _w = _wInit.initialize((inputSize, units))

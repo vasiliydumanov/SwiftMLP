@@ -22,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     func demo() {
-        let fileNames = ["w1", "w2", "x", "y"]
-        let shapes: [(Int, Int)] = [(2, 3), (3, 2), (1, 2), (1, 1)]
+        let fileNames = ["w1", "w2", "y"]
+        let shapes: [(Int, Int)] = [(2, 3), (3, 2), (1, 1)]
         var params: [matrix] = []
         for (name, shape) in zip(fileNames, shapes) {
             let filePath = Bundle.main.path(forResource: name, ofType: "csv")!
@@ -36,8 +36,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let w1 = params[0]
         let w2 = params[1]
-        let x = params[2]
-        let y = onehot(params[3].flat, nClasses: 2)
+        let x = matrix([[0.5, 0.3], [1.2, -0.8]])
+        let y = onehot(vector([1, 0]), nClasses: 2)
+        
+//        let x = matrix([[0.5, 0.3]])
+//        let y = onehot(vector([1]), nClasses: 2)
         
         let model = Model([
             Dense(units: 3,
@@ -50,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Softmax()
             ])
         model.compile(loss: SoftmaxCrossentropy())
-        model.train(x: x, y: y, optimizer: SGDOptimizer())
+        model.train(x: x, y: y, optimizer: AdamOptimizer())
     }
 }
 

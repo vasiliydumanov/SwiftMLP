@@ -21,7 +21,7 @@ public class Layer {
 public typealias SerializedLayerData = [String: matrix]
 
 public class LayerWithParameters : Layer {
-    public var states: [[matrix]]?
+    public var states: [[matrix]] = []
     public var gradients: [[matrix]] = []
     
     public func apply(gradients: [matrix]) {
@@ -30,6 +30,10 @@ public class LayerWithParameters : Layer {
     
     public func resetGradients() {
         gradients = []
+    }
+    
+    public func resetStates() {
+        states = []
     }
     
     public func encode() -> SerializedLayerData {

@@ -42,6 +42,8 @@
 		3E9EBC4C22289CBA0033495C /* SoftmaxCrossentropy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9EBC422228901C0033495C /* SoftmaxCrossentropy.swift */; };
 		3E9EBC4E2229584E0033495C /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9EBC4D2229584E0033495C /* Helpers.swift */; };
 		3E9EBC4F222959220033495C /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9EBC4D2229584E0033495C /* Helpers.swift */; };
+		3EB39CA1222AE77C0008BEFC /* AdamOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB39CA0222AE77C0008BEFC /* AdamOptimizer.swift */; };
+		3EB39CA3222AE8320008BEFC /* AdamOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB39CA0222AE77C0008BEFC /* AdamOptimizer.swift */; };
 		3ED9BF972229723E00EB3DDD /* Metric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED9BF962229723E00EB3DDD /* Metric.swift */; };
 		3ED9BF992229729200EB3DDD /* Accuracy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED9BF982229729200EB3DDD /* Accuracy.swift */; };
 /* End PBXBuildFile section */
@@ -110,6 +112,7 @@
 		3E9EBC46222895610033495C /* Optimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optimizer.swift; sourceTree = "<group>"; };
 		3E9EBC482228964B0033495C /* SGDOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGDOptimizer.swift; sourceTree = "<group>"; };
 		3E9EBC4D2229584E0033495C /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		3EB39CA0222AE77C0008BEFC /* AdamOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdamOptimizer.swift; sourceTree = "<group>"; };
 		3ED9BF962229723E00EB3DDD /* Metric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metric.swift; sourceTree = "<group>"; };
 		3ED9BF982229729200EB3DDD /* Accuracy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accuracy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -227,6 +230,7 @@
 			children = (
 				3E9EBC46222895610033495C /* Optimizer.swift */,
 				3E9EBC482228964B0033495C /* SGDOptimizer.swift */,
+				3EB39CA0222AE77C0008BEFC /* AdamOptimizer.swift */,
 			);
 			path = Optimizers;
 			sourceTree = "<group>";
@@ -384,6 +388,7 @@
 				3E9EBC432228901C0033495C /* SoftmaxCrossentropy.swift in Sources */,
 				3E9EBC4122288F7C0033495C /* Loss.swift in Sources */,
 				3E9EBC3022287EA20033495C /* Model.swift in Sources */,
+				3EB39CA1222AE77C0008BEFC /* AdamOptimizer.swift in Sources */,
 				3E9EBC4E2229584E0033495C /* Helpers.swift in Sources */,
 				3ED9BF992229729200EB3DDD /* Accuracy.swift in Sources */,
 				3E9EBBF6222859690033495C /* Initializers.swift in Sources */,
@@ -404,6 +409,7 @@
 				3E9EBC35222886C30033495C /* Model.swift in Sources */,
 				3E9EBC4A22289BA30033495C /* Optimizer.swift in Sources */,
 				3E9EBC31222886C30033495C /* Base.swift in Sources */,
+				3EB39CA3222AE8320008BEFC /* AdamOptimizer.swift in Sources */,
 				3E9EBC32222886C30033495C /* Dense.swift in Sources */,
 				3E28D945222978F700A0AD39 /* Metric.swift in Sources */,
 				3E9EBC34222886C30033495C /* Initializers.swift in Sources */,

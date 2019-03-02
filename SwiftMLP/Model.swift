@@ -56,14 +56,14 @@ public final class Model {
         }
         
         let batchIds = Array(0..<xTrain.rows).chunked(minSize: batchSize)
+        let isSoftmaxAndCrossentropy = _layers.last is Softmax && loss is SoftmaxCrossentropy
+        let backpropLrs = isSoftmaxAndCrossentropy ? Array(_layers.dropLast()) : _layers
         
+        _layerWithParams.forEach { lr in lr.resetStates() }
         for epoch in 0..<nEpochs {
             for (i, batch) in batchIds.enumerated() {
                 let xBatch = xTrain[vector(batch), arange(xTrain.columns)]
                 let yBatch = yTrain[vector(batch), arange(yTrain.columns)]
-                
-                let isSoftmaxAndCrossentropy = _layers.last is Softmax && loss is SoftmaxCrossentropy
-                let backpropLrs = isSoftmaxAndCrossentropy ? Array(_layers.dropLast()) : _layers
                 
                 let xBatchExploded = vexplode(xBatch).map { reshape($0, shape: (1, $0.n)) }
                 let yBatchExploded = vexplode(yBatch).map { reshape($0, shape: (1, $0.n)) }
@@ -82,7 +82,7 @@ public final class Model {
                     _ = backpropLrs.reversed().reduce(initGrad, { grad, layer in layer.backprop(grad) })
                 }
                 _layerWithParams.forEach { lr in
-                    optimizer.optimizeGradients(for: lr)
+                    optimizer.optimizeGradients(for: lr, epoch: epoch + 1)
                 }
                 
                 if i == batchIds.count - 1 {
