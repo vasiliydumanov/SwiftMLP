@@ -130,4 +130,34 @@ public final class Model {
             lr.decode(entry.data)
         }
     }
+    
+    public func save(to modelDir: String) throws {
+        let fm = FileManager.default
+        try? fm.removeItem(atPath: modelDir)
+        try serialize().forEach { lrName, lrData in
+            let lrDirPath = (modelDir as NSString).appendingPathComponent(lrName)
+            if !fm.fileExists(atPath: lrDirPath) {
+                try fm.createDirectory(atPath: lrDirPath, withIntermediateDirectories: true, attributes: nil)
+            }
+            lrData.forEach { paramName, paramData in
+                let entryFilePath = (lrDirPath as NSString).appendingPathComponent(lrName)
+                write_binary(paramData, filename: entryFilePath)
+            }
+        }
+    }
+    
+    public func restore(from modelDir: String) throws -> Bool {
+        let fm = FileManager.default
+        guard let lrDirs = try? fm.contentsOfDirectory(atPath: modelDir) else { return false }
+        try lrDirs.forEach { lrDir in
+            let lrParamFiles = try fm.contentsOfDirectory(atPath: (modelDir as NSString).appendingPathComponent(lrDir))
+            var lrData: SerializedLayerData = [:]
+            lrParamFiles.forEach { lrParamFile in
+                let paramName = lrParamFile
+                let paramData: matrix = read_binary(lrParamFile)
+                lrData[paramName] = paramData
+            }
+        }
+        return true
+    }
 }
