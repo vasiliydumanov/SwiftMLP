@@ -214,7 +214,7 @@ public final class Model {
             for lrParamFile in lrParamFiles {
                 let paramName = lrParamFile
                 let paramFilePath = (ldDirPath as NSString).appendingPathComponent(lrParamFile)
-                let paramData: matrix = read_binary(paramFilePath)
+                let paramData: matrix = try read_binary(paramFilePath)
                 lrData[paramName] = paramData
             }
             modelData.append((lrDir, lrData))

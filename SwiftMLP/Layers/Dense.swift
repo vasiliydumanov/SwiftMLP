@@ -44,8 +44,6 @@ public class Dense : LayerWithParameters {
         }
         gradients[0].append(wGrad)
         gradients[1].append(bGrad)
-//        print("wGrad: \(wGrad)")
-//        print("bGrad: \(bGrad)")
         return sum(_w * outputGrad, axis: 1).reshape((1, _w.shape.0))
     }
     
