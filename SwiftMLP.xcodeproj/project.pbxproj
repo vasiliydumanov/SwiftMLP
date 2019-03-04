@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		3E28D943222978F500A0AD39 /* Accuracy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED9BF982229729200EB3DDD /* Accuracy.swift */; };
 		3E28D945222978F700A0AD39 /* Metric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED9BF962229723E00EB3DDD /* Metric.swift */; };
+		3E61B3B4222C295A00276186 /* Callback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61B3B3222C295A00276186 /* Callback.swift */; };
+		3E61B3B5222D23D400276186 /* Callback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61B3B3222C295A00276186 /* Callback.swift */; };
+		3E61B3B7222D240F00276186 /* EarlyStopping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61B3B6222D240F00276186 /* EarlyStopping.swift */; };
+		3E61B3B9222D2E1E00276186 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61B3B8222D2E1E00276186 /* Logging.swift */; };
 		3E9EBBD6222838C70033495C /* SwiftMLP.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E9EBBD4222838C70033495C /* SwiftMLP.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3E9EBBE6222839880033495C /* swix_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E9EBBE42228396A0033495C /* swix_ios.framework */; };
 		3E9EBBF322283B900033495C /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9EBBF222283B900033495C /* Base.swift */; };
@@ -87,6 +91,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3E61B3B3222C295A00276186 /* Callback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Callback.swift; sourceTree = "<group>"; };
+		3E61B3B6222D240F00276186 /* EarlyStopping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarlyStopping.swift; sourceTree = "<group>"; };
+		3E61B3B8222D2E1E00276186 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		3E9EBBD1222838C70033495C /* SwiftMLP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftMLP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E9EBBD4222838C70033495C /* SwiftMLP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftMLP.h; sourceTree = "<group>"; };
 		3E9EBBD5222838C70033495C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -137,6 +144,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E61B3B1222C295000276186 /* Callbacks */ = {
+			isa = PBXGroup;
+			children = (
+				3E61B3B3222C295A00276186 /* Callback.swift */,
+				3E61B3B6222D240F00276186 /* EarlyStopping.swift */,
+				3E61B3B8222D2E1E00276186 /* Logging.swift */,
+			);
+			path = Callbacks;
+			sourceTree = "<group>";
+		};
 		3E9EBBC7222838C70033495C = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +177,7 @@
 		3E9EBBD3222838C70033495C /* SwiftMLP */ = {
 			isa = PBXGroup;
 			children = (
+				3E61B3B1222C295000276186 /* Callbacks */,
 				3ED9BF942229723300EB3DDD /* Metrics */,
 				3E9EBC45222895560033495C /* Optimizers */,
 				3E9EBC3F22288F6D0033495C /* Losses */,
@@ -385,6 +403,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E61B3B4222C295A00276186 /* Callback.swift in Sources */,
 				3E9EBC432228901C0033495C /* SoftmaxCrossentropy.swift in Sources */,
 				3E9EBC4122288F7C0033495C /* Loss.swift in Sources */,
 				3E9EBC3022287EA20033495C /* Model.swift in Sources */,
@@ -398,6 +417,8 @@
 				3E9EBBF322283B900033495C /* Base.swift in Sources */,
 				3E9EBC492228964B0033495C /* SGDOptimizer.swift in Sources */,
 				3E9EBBF922285B9A0033495C /* Dense.swift in Sources */,
+				3E61B3B7222D240F00276186 /* EarlyStopping.swift in Sources */,
+				3E61B3B9222D2E1E00276186 /* Logging.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +432,7 @@
 				3E9EBC31222886C30033495C /* Base.swift in Sources */,
 				3EB39CA3222AE8320008BEFC /* AdamOptimizer.swift in Sources */,
 				3E9EBC32222886C30033495C /* Dense.swift in Sources */,
+				3E61B3B5222D23D400276186 /* Callback.swift in Sources */,
 				3E28D945222978F700A0AD39 /* Metric.swift in Sources */,
 				3E9EBC34222886C30033495C /* Initializers.swift in Sources */,
 				3E9EBC1822287B8C0033495C /* ViewController.swift in Sources */,

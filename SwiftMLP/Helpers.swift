@@ -25,3 +25,14 @@ public func onehot(_ vec: vector, nClasses: Int) -> matrix {
     }
     return mat
 }
+
+public func metricToLogStr(_ metric: Double) -> String {
+    let smallestExp: Double = 5
+    let normalizer: Double = pow(10, smallestExp)
+    let rndMetric = round(metric * normalizer) / normalizer
+    if rndMetric != 0 {
+        return String(rndMetric)
+    } else {
+        return String(format: "%e", rndMetric)
+    }
+}

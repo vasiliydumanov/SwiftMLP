@@ -11,6 +11,20 @@ import swix_ios
 
 public typealias SerializedModelData = [(name: String, data: SerializedLayerData)]
 
+public typealias Log = [LogKey: Any]
+
+public struct LogKey: RawRepresentable, Hashable {
+    public let rawValue: String
+    
+    public static let trainLoss = LogKey(rawValue: "train_loss")
+    public static let valLoss = LogKey(rawValue: "val_loss")
+    public static let epochLogStr = LogKey(rawValue: "epoch_log_str")
+    
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
 public final class Model {
     private let _layers: [Layer]
     private var _layerWithParams: [LayerWithParameters] {
@@ -19,6 +33,7 @@ public final class Model {
     
     public private(set) var isCompiled = false
     private var _loss: Loss?
+    public var _optimizer: Optimizer?
     
     public init(_ layers: [Layer]) {
         _layers = layers
@@ -30,11 +45,13 @@ public final class Model {
     }
     
     public func train(x: matrix, y: matrix, optimizer: Optimizer, nEpochs: Int = 1000, batchSize: Int = 32,
-                      validationPct: Double = 0.0, metrics: [Metric] = []) {
+                      validationPct: Double = 0.0, metrics: [Metric] = [], callbacks: [Callback] = []) {
         guard isCompiled else {
             fatalError("Model must be compiled before training.")
         }
         guard let loss = _loss else { return }
+        
+        self._optimizer = optimizer
         
         let shuffledIdx = randperm(x.rows)
         let shuffledX = x[shuffledIdx, arange(x.columns)]
@@ -59,8 +76,16 @@ public final class Model {
         let isSoftmaxAndCrossentropy = _layers.last is Softmax && loss is SoftmaxCrossentropy
         let backpropLrs = isSoftmaxAndCrossentropy ? Array(_layers.dropLast()) : _layers
         
+        
         _layerWithParams.forEach { lr in lr.resetStates() }
-        for epoch in 0..<nEpochs {
+        var log: Log = [:]
+        let sortedCallbacks = callbacks.sorted { $0.priority.rawValue < $1.priority.rawValue }
+        for callback in sortedCallbacks {
+            callback._model = self
+            callback.onTrainBegin()
+        }
+        for epoch in 1...nEpochs {
+            log = [:]
             for (i, batch) in batchIds.enumerated() {
                 let xBatch = xTrain[vector(batch), arange(xTrain.columns)]
                 let yBatch = yTrain[vector(batch), arange(yTrain.columns)]
@@ -82,34 +107,53 @@ public final class Model {
                     _ = backpropLrs.reversed().reduce(initGrad, { grad, layer in layer.backprop(grad) })
                 }
                 _layerWithParams.forEach { lr in
-                    optimizer.optimizeGradients(for: lr, epoch: epoch + 1)
+                    optimizer.optimizeGradients(for: lr, epoch: epoch)
                 }
                 
                 if i == batchIds.count - 1 {
                     let yBatchPred = vstack(ySinglePreds)
-                    var logStr: String = "Epoch: \(epoch + 1)/\(nEpochs): "
+                    var logStr: String = "Epoch: \(epoch)/\(nEpochs): "
                     var trainStrs: [String] = []
                     let trainLossVal = mean(loss.evaluate(y: yBatch, yPred: yBatchPred))
-                    trainStrs.append("train loss = \(trainLossVal)")
-                    trainStrs += metrics.map { m in
-                        "train \(m.name) = \(m.evaluate(y: yBatch, yPred: yBatchPred))"
+                    log[.trainLoss] = trainLossVal
+                    trainStrs.append("\(LogKey.trainLoss.rawValue) = \(metricToLogStr(trainLossVal))")
+                    for metric in metrics {
+                        let metricVal = metric.evaluate(y: yBatch, yPred: yBatchPred)
+                        log[metric.trainLogKey] = metricVal
+                        trainStrs.append("\(metric.trainLogKey.rawValue) = \(metricToLogStr(metricVal))")
                     }
                     logStr += trainStrs.joined(separator: ", ")
                     if let xVal = xVal, let yVal = yVal {
                         let yValPred = _layers.reduce(xVal, { input, layer in layer.forward(input) })
                         var valStrs: [String] = []
                         let valLossVal = mean(loss.evaluate(y: yVal, yPred: yValPred))
-                        valStrs.append("; val loss = \(valLossVal)")
-                        valStrs += metrics.map { m in
-                            "val \(m.name) = \(m.evaluate(y: yVal, yPred: yValPred))"
+                        log[.valLoss] = valLossVal
+                        valStrs.append("; \(LogKey.valLoss.rawValue) = \(metricToLogStr(valLossVal))")
+                        for metric in metrics {
+                            let metricVal = metric.evaluate(y: yVal, yPred: yValPred)
+                            log[metric.valLogKey] = metricVal
+                            valStrs.append("\(metric.valLogKey.rawValue) = \(metricToLogStr(metricVal))")
                         }
                         logStr += valStrs.joined(separator: ", ")
                     }
+                    log[.epochLogStr] = logStr
                     print(logStr)
                 }
             }
+            var shouldStopTraining = false
+            for callback in sortedCallbacks {
+                callback.onEpochBegin(epoch: epoch, log: &log)
+                if !callback.onEpochEnd(epoch: epoch, log: &log) {
+                    shouldStopTraining = true
+                }
+            }
+            if shouldStopTraining {
+                break
+            }
         }
-        
+        for callback in sortedCallbacks {
+            callback.onTrainEnd(log: &log)
+        }
     }
     
     public func predict(_ x: matrix) -> matrix {
@@ -134,7 +178,7 @@ public final class Model {
             guard let lr = _layerWithParams
                 .enumerated()
                 .first(where: { idx, lr in
-                    NSStringFromClass(type(of: lr)) == lrCls && idx == lrId
+                    NSStringFromClass(type(of: lr)) == lrCls && idx == lrId - 1
                 })?.element
             else {
                 fatalError("Unable to find layer with parsed class and index.")

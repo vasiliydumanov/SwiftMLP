@@ -10,6 +10,13 @@ import Foundation
 import swix_ios
 
 public class Metric {
+    public var trainLogKey: LogKey {
+        preconditionFailure("Subclass must override this property.")
+    }
+    public var valLogKey: LogKey {
+        preconditionFailure("Subclass must override this property.")
+    }
+    
     public var name: String {
         preconditionFailure("Subclass must override this property.")
     }
