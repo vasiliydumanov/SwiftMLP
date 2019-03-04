@@ -164,7 +164,8 @@ public final class Model {
         return _layerWithParams
             .enumerated()
             .map { idx, lr in
-                ("\(NSStringFromClass(type(of: lr)))_\(idx + 1)", lr.encode())
+                let lrStr = NSStringFromClass(type(of: lr)).split(separator: ".").last!
+                return ("\(lrStr)_\(idx + 1)", lr.encode())
             }
     }
     
@@ -178,7 +179,7 @@ public final class Model {
             guard let lr = _layerWithParams
                 .enumerated()
                 .first(where: { idx, lr in
-                    NSStringFromClass(type(of: lr)) == lrCls && idx == lrId - 1
+                    NSStringFromClass(type(of: lr)).split(separator: ".").last! == lrCls && idx == lrId - 1
                 })?.element
             else {
                 fatalError("Unable to find layer with parsed class and index.")
@@ -196,7 +197,7 @@ public final class Model {
                 try fm.createDirectory(atPath: lrDirPath, withIntermediateDirectories: true, attributes: nil)
             }
             lrData.forEach { paramName, paramData in
-                let entryFilePath = (lrDirPath as NSString).appendingPathComponent(lrName)
+                let entryFilePath = (lrDirPath as NSString).appendingPathComponent(paramName)
                 write_binary(paramData, filename: entryFilePath)
             }
         }
@@ -205,15 +206,20 @@ public final class Model {
     public func restore(from modelDir: String) throws -> Bool {
         let fm = FileManager.default
         guard let lrDirs = try? fm.contentsOfDirectory(atPath: modelDir) else { return false }
-        try lrDirs.forEach { lrDir in
-            let lrParamFiles = try fm.contentsOfDirectory(atPath: (modelDir as NSString).appendingPathComponent(lrDir))
+        var modelData: SerializedModelData = []
+        for lrDir in lrDirs {
+            let ldDirPath = (modelDir as NSString).appendingPathComponent(lrDir)
+            let lrParamFiles = try fm.contentsOfDirectory(atPath: ldDirPath)
             var lrData: SerializedLayerData = [:]
-            lrParamFiles.forEach { lrParamFile in
+            for lrParamFile in lrParamFiles {
                 let paramName = lrParamFile
-                let paramData: matrix = read_binary(lrParamFile)
+                let paramFilePath = (ldDirPath as NSString).appendingPathComponent(lrParamFile)
+                let paramData: matrix = read_binary(paramFilePath)
                 lrData[paramName] = paramData
             }
+            modelData.append((lrDir, lrData))
         }
+        restore(from: modelData)
         return true
     }
 }

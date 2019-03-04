@@ -43,7 +43,7 @@ public class EarlyStopping : Callback {
                 log[.esEpoch] = _bestEpoch!
                 log[.esMonitor] = monitor
                 log[.esBestMonitored] = _bestMonitored
-                log[.esLogStr] = "Early stopping: Restoring parameters from epoch \(_bestEpoch!), \(monitor.rawValue) = \(_bestMonitored)"
+                log[.esLogStr] = "Early stopping: Restoring parameters from epoch \(_bestEpoch!), \(monitor.rawValue) = \(metricToLogStr(_bestMonitored))"
                 print(log[.esLogStr] as! String)
                 _model.restore(from: _bestParams!)
                 return false
