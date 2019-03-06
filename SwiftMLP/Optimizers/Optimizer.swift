@@ -9,7 +9,7 @@
 import Foundation
 import swix_ios
 
-public class Optimizer {
+open class Optimizer {
     public var learningRate: Double
     
     public init(learningRate: Double = 0.0001) {

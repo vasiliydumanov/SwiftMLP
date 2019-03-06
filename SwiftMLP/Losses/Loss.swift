@@ -9,7 +9,7 @@
 import Foundation
 import swix_ios
 
-public class Loss {
+open class Loss {
     public func evaluate(y: matrix, yPred: matrix) -> vector {
         preconditionFailure("Subclass must override this method.")
     }

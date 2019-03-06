@@ -9,7 +9,7 @@
 import Foundation
 import swix_ios
 
-public class Metric {
+open class Metric {
     public var trainLogKey: LogKey {
         preconditionFailure("Subclass must override this property.")
     }

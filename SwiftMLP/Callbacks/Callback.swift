@@ -9,7 +9,7 @@
 import Foundation
 
 
-public class Callback {
+open class Callback {
     public enum Priority : Int {
         case begin = 0
         case middle = 1
