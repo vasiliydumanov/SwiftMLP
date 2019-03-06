@@ -35,9 +35,6 @@ public final class Model {
     private var _loss: Loss?
     public var _optimizer: Optimizer?
     
-    private var _isTraining = false
-    private var _shouldCancelTraining = false
-    
     public init(_ layers: [Layer]) {
         _layers = layers
     }
@@ -53,7 +50,6 @@ public final class Model {
             fatalError("Model must be compiled before training.")
         }
         guard let loss = _loss else { return }
-        _isTraining = true
         
         self._optimizer = optimizer
         
@@ -91,9 +87,6 @@ public final class Model {
         for epoch in 1...nEpochs {
             log = [:]
             for (i, batch) in batchIds.enumerated() {
-                if _shouldCancelTraining {
-                    break
-                }
                 let xBatch = xTrain[vector(batch), arange(xTrain.columns)]
                 let yBatch = yTrain[vector(batch), arange(yTrain.columns)]
                 
@@ -147,9 +140,6 @@ public final class Model {
                     print(logStr)
                 }
             }
-            if _shouldCancelTraining {
-                break
-            }
             var shouldStopTraining = false
             for callback in sortedCallbacks {
                 callback.onEpochBegin(epoch: epoch, log: &log)
@@ -161,16 +151,9 @@ public final class Model {
                 break
             }
         }
-        _isTraining = false
-        _shouldCancelTraining = false
         for callback in sortedCallbacks {
             callback.onTrainEnd(log: &log)
         }
-    }
-    
-    public func cancelTraining() {
-        guard _isTraining else { return }
-        _shouldCancelTraining = true
     }
     
     public func predict(_ x: matrix) -> matrix {
@@ -229,9 +212,9 @@ public final class Model {
             let lrParamFiles = try fm.contentsOfDirectory(atPath: ldDirPath)
             var lrData: SerializedLayerData = [:]
             for lrParamFile in lrParamFiles {
-                let paramFilePath = (ldDirPath as NSString).appendingPathComponent(lrParamFile)
-                guard let paramData: matrix = try? read_binary(paramFilePath) else { continue }
                 let paramName = lrParamFile
+                let paramFilePath = (ldDirPath as NSString).appendingPathComponent(lrParamFile)
+                let paramData: matrix = try read_binary(paramFilePath)
                 lrData[paramName] = paramData
             }
             modelData.append((lrDir, lrData))
