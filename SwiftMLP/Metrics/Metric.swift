@@ -10,18 +10,18 @@ import Foundation
 import swix_ios
 
 open class Metric {
-    public var trainLogKey: LogKey {
+    open var trainLogKey: LogKey {
         preconditionFailure("Subclass must override this property.")
     }
-    public var valLogKey: LogKey {
-        preconditionFailure("Subclass must override this property.")
-    }
-    
-    public var name: String {
+    open var valLogKey: LogKey {
         preconditionFailure("Subclass must override this property.")
     }
     
-    public func evaluate(y: matrix, yPred: matrix) -> Double {
+    open var name: String {
+        preconditionFailure("Subclass must override this property.")
+    }
+    
+    open func evaluate(y: matrix, yPred: matrix) -> Double {
         preconditionFailure("Subclass must override this method.")
     }
 }

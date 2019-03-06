@@ -10,10 +10,10 @@ import Foundation
 import swix_ios
 
 open class Layer {
-    public func forward(_ input: matrix) -> matrix {
+    open func forward(_ input: matrix) -> matrix {
         preconditionFailure("Subclass must override this method.")
     }
-    public func backprop(_ outputGrad: matrix) -> matrix {
+    open func backprop(_ outputGrad: matrix) -> matrix {
         preconditionFailure("Subclass must override this method.")
     }
 }
@@ -24,7 +24,7 @@ open class LayerWithParameters : Layer {
     public var states: [[matrix]] = []
     public var gradients: [[matrix]] = []
     
-    public func apply(gradients: [matrix]) {
+    open func apply(gradients: [matrix]) {
         preconditionFailure("Subclass must override this method.")
     }
     
@@ -36,11 +36,11 @@ open class LayerWithParameters : Layer {
         states = []
     }
     
-    public func encode() -> SerializedLayerData {
+    open func encode() -> SerializedLayerData {
         preconditionFailure("Subclass must override this method.")
     }
     
-    public func decode(_ data: SerializedLayerData) {
+    open func decode(_ data: SerializedLayerData) {
         preconditionFailure("Subclass must override this method.")
     }
 }

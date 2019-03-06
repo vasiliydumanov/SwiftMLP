@@ -16,7 +16,7 @@ open class Optimizer {
         self.learningRate = learningRate
     }
     
-    public func optimizeGradients(for layer: LayerWithParameters, epoch: Int) {
+    open func optimizeGradients(for layer: LayerWithParameters, epoch: Int) {
         preconditionFailure("Subclass must override this method.")
     }
 }

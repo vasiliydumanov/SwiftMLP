@@ -10,11 +10,11 @@ import Foundation
 import swix_ios
 
 open class Loss {
-    public func evaluate(y: matrix, yPred: matrix) -> vector {
+    open func evaluate(y: matrix, yPred: matrix) -> vector {
         preconditionFailure("Subclass must override this method.")
     }
     
-    public func backprop(y: matrix, yPred: matrix) -> matrix {
+    open func backprop(y: matrix, yPred: matrix) -> matrix {
         preconditionFailure("Subclass must override this method.")
     }
 }

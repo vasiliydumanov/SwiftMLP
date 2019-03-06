@@ -18,27 +18,27 @@ open class Callback {
     
     public var _model: Model!
     
-    public var priority: Priority {
+    open var priority: Priority {
         preconditionFailure("Subclass must override this property.")
     }
     
-    public func onTrainBegin() {
+    open func onTrainBegin() {
     }
     
-    public func onTrainEnd(log: inout Log) {
+    open func onTrainEnd(log: inout Log) {
     }
     
-    public func onEpochBegin(epoch: Int, log: inout Log) {
+    open func onEpochBegin(epoch: Int, log: inout Log) {
     }
     
-    public func onEpochEnd(epoch: Int, log: inout Log) -> Bool {
+    open func onEpochEnd(epoch: Int, log: inout Log) -> Bool {
         return true
     }
     
-    public func onBatchBegin() {
+    open func onBatchBegin() {
     }
     
-    public func onBatchEnd() -> Bool {
+    open func onBatchEnd() -> Bool {
         return true
     }
 }
