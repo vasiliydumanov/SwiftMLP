@@ -34,6 +34,13 @@ public class Callback {
     public func onEpochEnd(epoch: Int, log: inout Log) -> Bool {
         return true
     }
+    
+    public func onBatchBegin() {
+    }
+    
+    public func onBatchEnd() -> Bool {
+        return true
+    }
 }
 
 

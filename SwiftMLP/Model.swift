@@ -84,6 +84,7 @@ public final class Model {
             callback._model = self
             callback.onTrainBegin()
         }
+        var shouldStopTraining = false
         for epoch in 1...nEpochs {
             log = [:]
             for (i, batch) in batchIds.enumerated() {
@@ -139,8 +140,19 @@ public final class Model {
                     log[.epochLogStr] = logStr
                     print(logStr)
                 }
+                for callback in sortedCallbacks {
+                    callback.onBatchBegin()
+                    if !callback.onBatchEnd() {
+                        shouldStopTraining = true
+                    }
+                }
+                if shouldStopTraining {
+                    break
+                }
             }
-            var shouldStopTraining = false
+            if shouldStopTraining {
+                break
+            }
             for callback in sortedCallbacks {
                 callback.onEpochBegin(epoch: epoch, log: &log)
                 if !callback.onEpochEnd(epoch: epoch, log: &log) {
