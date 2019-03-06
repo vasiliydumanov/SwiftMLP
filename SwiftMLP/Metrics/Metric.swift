@@ -21,6 +21,8 @@ open class Metric {
         preconditionFailure("Subclass must override this property.")
     }
     
+    public init() {}
+    
     open func evaluate(y: matrix, yPred: matrix) -> Double {
         preconditionFailure("Subclass must override this method.")
     }

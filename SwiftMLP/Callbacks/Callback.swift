@@ -22,6 +22,8 @@ open class Callback {
         preconditionFailure("Subclass must override this property.")
     }
     
+    public init() {}
+    
     open func onTrainBegin() {
     }
     
