@@ -42,6 +42,10 @@ open class LayerWithParameters : Layer {
         states = []
     }
     
+    open func resetParams() {
+        preconditionFailure("Subclass must override this method.")
+    }
+    
     open func encode() -> SerializedLayerData {
         preconditionFailure("Subclass must override this method.")
     }

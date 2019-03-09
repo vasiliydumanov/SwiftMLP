@@ -234,4 +234,8 @@ public final class Model {
         restore(from: modelData)
         return true
     }
+    
+    public func reset() {
+        _layerWithParams.forEach { $0.resetParams() }
+    }
 }

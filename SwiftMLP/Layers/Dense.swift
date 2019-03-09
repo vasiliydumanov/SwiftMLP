@@ -60,4 +60,9 @@ public class Dense : LayerWithParameters {
         _w = data["w"]
         _b = data["b"]
     }
+    
+    public override func resetParams() {
+        _w = nil
+        _b = nil
+    }
 }
