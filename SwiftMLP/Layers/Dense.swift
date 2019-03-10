@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public class Dense : LayerWithParameters {
     public let units: Int

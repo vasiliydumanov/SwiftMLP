@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public class Relu : Layer {
     private var _input: matrix!

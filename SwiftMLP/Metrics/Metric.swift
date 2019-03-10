@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 open class Metric {
     open var trainLogKey: LogKey {

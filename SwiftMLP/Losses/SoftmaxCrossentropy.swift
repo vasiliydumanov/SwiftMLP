@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public final class SoftmaxCrossentropy : Loss {
     public override init() { super.init() }

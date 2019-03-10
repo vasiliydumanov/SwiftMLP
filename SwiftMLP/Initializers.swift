@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public class Initializer {
     public typealias Function = ((Int, Int)?) -> matrix

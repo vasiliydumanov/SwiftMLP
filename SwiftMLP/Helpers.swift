@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 
 public func glorotn(_ shape: (Int, Int), fanIn: Int, fanOut: Int) -> matrix {

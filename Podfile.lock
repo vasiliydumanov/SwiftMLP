@@ -1,0 +1,16 @@
+PODS:
+  - swix (1.0.11)
+
+DEPENDENCIES:
+  - swix (~> 1.0.11)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - swix
+
+SPEC CHECKSUMS:
+  swix: 365fceb65c8c1c98ae8e697c2f16743d873eb9db
+
+PODFILE CHECKSUM: a760d890d9e00ce027bf7e33b13b7bc3c23038bd
+
+COCOAPODS: 1.5.3

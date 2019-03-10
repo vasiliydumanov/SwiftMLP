@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public final class Accuracy : Metric {
     public override var trainLogKey: LogKey {

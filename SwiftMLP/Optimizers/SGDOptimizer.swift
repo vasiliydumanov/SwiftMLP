@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public final class SGDOptimizer : Optimizer {
     public override func optimizeGradients(for layer: LayerWithParameters, epoch: Int) {

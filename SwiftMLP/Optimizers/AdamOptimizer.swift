@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public final class AdamOptimizer : Optimizer {
     public let beta1: Double

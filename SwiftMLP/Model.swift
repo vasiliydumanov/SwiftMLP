@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swix_ios
+import swix
 
 public typealias SerializedModelData = [(name: String, data: SerializedLayerData)]
 
